@@ -3,7 +3,7 @@
 
 // including required libraries
 #include <Arduino.h>
-#include <OneBitDisplay.h>
+#include <Nokia_LCD.h>
 #include <Adafruit_Si4713.h>
 // defining pins for fm transmitter
 #define SDA A4
@@ -23,8 +23,13 @@
 #define BTN_MID 3
 #define BTN_LEFT 2
 
+//lcd object declaration
+extern Nokia_LCD lcd;
+
 //functions declaration
 void transmitter_setup();
 void lcd_blink();
+
+
 
 #endif

@@ -3,7 +3,11 @@
 Nokia_LCD lcd(CLK, DIN, DC, CE, LCD_RST);
 unsigned long currTime;
 unsigned long backlightLightTime;
-const unsigned long backlightDimTreshold = 5000;
+unsigned short currFreq = 10000;
+unsigned short freqChangeStep = 100;
+bool prevLBstate;
+bool prevMBstate;
+bool prevRBstate;
 
 void transmitter_setup(){
     currTime = millis();
@@ -11,46 +15,49 @@ void transmitter_setup(){
     pinMode(BTN_LEFT, INPUT);
     pinMode(BTN_MID, INPUT);
     pinMode(BTN_RIGHT, INPUT);
+    prevLBstate = digitalRead(BTN_LEFT);
+    prevMBstate = digitalRead(BTN_MID);
+    prevRBstate = digitalRead(BTN_RIGHT);
     lcd.begin();
     lcd.setContrast(60);
     lcd.clear();
-    lcd.setCursor(30, 1);
-    lcd.print("Test");
-    lcd.setCursor(4, 2);
-    lcd.print("Dzaju to chuj");
+    lcd.setCursor(20, 1);
+    lcd.print("Frequency");
+    lcd.setCursor(60, 3);
+    lcd.print("MHz");
+    
 }
 
-// test function for simple backlight fading in and out
-void lcd_blink(){
-    for(int i = 0; i < 255; i++){
-        analogWrite(BL, i);
-        delay(20);
+void frequencySwitchButtonHandler(){
+    if (!digitalRead(BTN_RIGHT) && digitalRead(BTN_LEFT) != prevLBstate){
+        if(digitalRead(BTN_LEFT)) frequencySwitchAndLcdOutput(false);
+    } 
+    if (!digitalRead(BTN_LEFT) && digitalRead(BTN_RIGHT) != prevRBstate){
+        if(digitalRead(BTN_RIGHT)) frequencySwitchAndLcdOutput(true);
     }
-    for(int i = 255; i > 0; i--){
-        analogWrite(BL, i);
-        delay(20);
-    }
-}
-
-//test function for buttons read and writing output to the screen
-void button_lcd_output_test(){
-    btn_screen_changer(BTN_LEFT, 20, 3);
-    btn_screen_changer(BTN_MID, 40, 3);
-    btn_screen_changer(BTN_RIGHT, 60, 3);
+    prevLBstate = digitalRead(BTN_LEFT);
+    prevMBstate = digitalRead(BTN_MID);
+    prevRBstate = digitalRead(BTN_RIGHT);
     currTime = millis();
-    if (currTime - backlightLightTime >=  backlightDimTreshold){
+    if (currTime - backlightLightTime >=  DIM_TIME){
         analogWrite(BL, 0);
     }
 }
 
-void btn_screen_changer(int pin, int x, int y){
-    if (digitalRead(pin) == HIGH){
-        lcd.setCursor(x, y);
-        lcd.print("1");
-        analogWrite(BL, 100);
-        backlightLightTime = currTime;
-    } else {
-        lcd.setCursor(x, y);
-        lcd.print("0");
+void frequencySwitchAndLcdOutput(bool incFreq){
+    unsigned short tempFreq;
+    if (incFreq){
+            tempFreq = currFreq + freqChangeStep;
+        } 
+    else {
+            tempFreq = currFreq - freqChangeStep;
+        }
+    if(tempFreq >= FREQ_MIN && tempFreq <= FREQ_MAX){
+        currFreq = tempFreq;
+        double freqToMHz = currFreq / 100;
+        lcd.setCursor(22, 3);
+        lcd.print(freqToMHz);
     }
-}
+    analogWrite(BL, 100);
+    backlightLightTime = currTime;
+};

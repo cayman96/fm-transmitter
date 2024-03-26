@@ -23,6 +23,11 @@
 #define BTN_MID 3
 #define BTN_LEFT 2
 
+#define FREQ_MIN 8750
+#define FREQ_MAX 10800
+#define DIM_TIME 5000
+
+
 //lcd object declaration
 extern Nokia_LCD lcd;
 
@@ -31,11 +36,17 @@ extern unsigned long currTime;
 extern unsigned long backlightLightTime;
 extern const unsigned long backlightDimTreshold;
 
+//frequency variable declaration
+extern unsigned short currFreq;
+extern unsigned short freqChangeStep;
+
+//button pressed tracker variables declaration
+extern bool prevLBstate;
+extern bool prevMBstate;
+extern bool prevRBstate;
+
 //functions declaration
 void transmitter_setup();
-void lcd_blink();
-void button_lcd_output_test();
-void btn_screen_changer(int pin, int x, int y);
-
-
+void frequencySwitchButtonHandler();
+void frequencySwitchAndLcdOutput(bool incFreq);
 #endif

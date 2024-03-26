@@ -26,10 +26,16 @@
 //lcd object declaration
 extern Nokia_LCD lcd;
 
+//time variables declaration
+extern unsigned long currTime;
+extern unsigned long backlightLightTime;
+extern const unsigned long backlightDimTreshold;
+
 //functions declaration
 void transmitter_setup();
 void lcd_blink();
-
+void button_lcd_output_test();
+void btn_screen_changer(int pin, int x, int y);
 
 
 #endif

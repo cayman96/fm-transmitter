@@ -5,5 +5,5 @@ void setup() {
 }
 
 void loop() {
-  lcd_blink();
+  button_lcd_output_test();
 }

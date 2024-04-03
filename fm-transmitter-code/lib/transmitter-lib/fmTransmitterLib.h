@@ -35,6 +35,9 @@
 //lcd object declaration
 extern Nokia_LCD lcd;
 
+//radio object declaration;
+extern Adafruit_Si4713 radio;
+
 //time variables declaration
 extern unsigned long currTime;
 extern unsigned long backlightLightTime;

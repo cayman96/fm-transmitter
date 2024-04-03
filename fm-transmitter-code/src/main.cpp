@@ -5,5 +5,5 @@ void setup() {
 }
 
 void loop() {
-  button_lcd_output_test();
+  frequencySwitchButtonHandler();
 }

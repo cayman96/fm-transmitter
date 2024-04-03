@@ -1,6 +1,7 @@
 #include <fmTransmitterLib.h>
 
 Nokia_LCD lcd(CLK, DIN, DC, CE, LCD_RST);
+Adafruit_Si4713 radio = Adafruit_Si4713(FM_RST);
 unsigned long currTime;
 unsigned long backlightLightTime;
 unsigned long defaultFreqMsgTime;
@@ -22,6 +23,7 @@ void freqToMHzConvertAndDisplay(unsigned short freq){
 }
 
 void transmitter_setup(){
+    radio.begin();
     currFreq = EEPROM.read(0) * 100;
     if (currFreq == 0){
         currFreq = 10000;
@@ -46,7 +48,9 @@ void transmitter_setup(){
     freqToMHzConvertAndDisplay(currFreq);
     lcd.setCursor(40, 3);
     lcd.print(".00 MHz");
-    
+    radio.setTXpower(115);
+    radio.tuneFM(currFreq);
+    radio.beginRDS();
 }
 
 void frequencySwitchButtonHandler(){
@@ -89,6 +93,7 @@ void frequencySwitchAndLcdOutput(bool incFreq){
         }
     if(tempFreq >= FREQ_MIN && tempFreq <= FREQ_MAX){
         currFreq = tempFreq;
+        radio.tuneFM(currFreq);
         freqToMHzConvertAndDisplay(currFreq);
     }
     analogWrite(BL, 100);

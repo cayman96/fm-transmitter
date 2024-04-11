@@ -42,10 +42,9 @@ void freqToMHzConvertAndDisplay(unsigned short freq){
 }
 
 void transmitter_setup(){
-    radio.begin();
     currFreq = EEPROM.read(0) * 100; // read EEPROM value at address 0 and multiply it by 100 to match kHz rate
     // if value read from EEPROM does not match between min and max frequencies, set default at 10000 kHz
-    if (currFreq > FREQ_MIN && currFreq < FREQ_MAX){
+    if (currFreq < FREQ_MIN && currFreq > FREQ_MAX){
         currFreq = 10000;
     }
     currTime = millis();
@@ -66,17 +65,24 @@ void transmitter_setup(){
     lcd.begin();
     lcd.setContrast(60);
     lcd.clear();
+    lcd.setCursor(20,0);
     lcd.setCursor(20, 1);
     lcd.print("Frequency");
     freqToMHzConvertAndDisplay(currFreq);
     lcd.setCursor(40, 3);
     lcd.print(".00 MHz");
+    // enabling transmitter module, resetting and powering it up again due to transmitter nnot working from cold boot fix
+    radio.begin();
+    radio.reset();
+    radio.powerUp();
     // setting transmission power to MAX = 115dB, according to the Si4713 documentation
     radio.setTXpower(115);
-    // tuning radio to current frequency, at first it's default loaded frequency
-    radio.tuneFM(currFreq);
     // begin broadcasting
     radio.beginRDS();
+    // additional reassurance for cold boot fix - quick frequency switch so the radio will readjust itself
+    radio.tuneFM(currFreq);
+    radio.tuneFM(currFreq + FREQ_STEP);
+    radio.tuneFM(currFreq);
 }
 
 /*

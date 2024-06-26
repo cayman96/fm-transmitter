@@ -23,7 +23,6 @@ unsigned short currFreq;
 bool prevLBstate;
 bool prevMBstate;
 bool prevRBstate;
-bool shouldNotReset;
 
 // function converting kHz to MHz for displaying on the screen 
 void freqToMHzConvertAndDisplay(unsigned short freq){

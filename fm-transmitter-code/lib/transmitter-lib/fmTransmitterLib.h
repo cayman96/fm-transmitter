@@ -52,6 +52,12 @@ middle button - save current frequency as default one, loaded at boot
 #define BTN_LEFT 2
 
 /*
+reset pin definition - it resets the circuit, funcion used when transmitter does not work from cold boot
+*/
+
+#define RST_PIN 6
+extern bool shouldNotReset;
+/*
 constants for maximum and minimum frequency (interpreted in kHz),frequency change step (also in kHz),
 backlight dim timeout (in miliseconds) and default set message disappear timeout (also in nanoseconds)
 */
@@ -109,4 +115,5 @@ void freqToMHzConverter(unsigned short freq);
 void transmitter_setup();
 void frequencySwitchButtonHandler();
 void frequencySwitchAndLcdOutput(bool incFreq);
+void backlightFadeIn();
 #endif

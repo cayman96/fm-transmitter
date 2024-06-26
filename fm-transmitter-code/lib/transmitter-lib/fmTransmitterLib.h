@@ -109,4 +109,5 @@ void freqToMHzConverter(unsigned short freq);
 void transmitter_setup();
 void frequencySwitchButtonHandler();
 void frequencySwitchAndLcdOutput(bool incFreq);
+void backlightFadeIn();
 #endif
